@@ -62,7 +62,8 @@ The check uses the following environment variables for configuration:
   or zero length file is recommended.
 
 The following statsd metrics are emitted by the check:
-* `kubernary.s3.download` - A boolean gauge. 1 when S3 downloads are successful.
+* `kubernary.s3.download.succeeded` - A count of successful S3 downloads.
+* `kubernary.s3.download.failed` - A count of failed S3 downloads.
 
 ## Building
 To build a Docker image run the following with a working Go environment:

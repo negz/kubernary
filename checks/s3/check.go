@@ -14,7 +14,8 @@ import (
 )
 
 const (
-	metricDownload string = "download"
+	metricDownloadSucceeded string = "download.succeeded"
+	metricDownloadFailed    string = "download.failed"
 
 	cfgRegion string = "REGION"
 	cfgBucket string = "BUCKET"
@@ -109,14 +110,14 @@ func (c *check) checkCanDownload() error {
 		Key:    aws.String(c.key),
 	})
 	if err != nil {
-		if serr := c.stats.SetInt(metricDownload, 0, 1.0); serr != nil {
-			c.log.Error("cannot emit metric", zap.String("metric", metricDownload), zap.Error(serr))
+		if serr := c.stats.Inc(metricDownloadFailed, 1, 1.0); serr != nil {
+			c.log.Error("cannot emit metric", zap.String("metric", metricDownloadFailed), zap.Error(serr))
 		}
 		c.log.Error("download check failed", zap.Error(err))
 		return errors.Wrapf(err, "%s download check failed, bucket=%s, key=%s", c.name, c.bucket, c.key)
 	}
-	if err := c.stats.SetInt(metricDownload, 1, 1.0); err != nil {
-		c.log.Error("cannot emit metric", zap.String("metric", metricDownload), zap.Error(err))
+	if err := c.stats.Inc(metricDownloadSucceeded, 1, 1.0); err != nil {
+		c.log.Error("cannot emit metric", zap.String("metric", metricDownloadSucceeded), zap.Error(err))
 	}
 	c.log.Debug("download check succeeded")
 	return nil
