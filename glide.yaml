@@ -1,0 +1,23 @@
+package: github.com/negz/kubernary
+import:
+- package: github.com/aws/aws-sdk-go
+  version: v1.7.9
+  subpackages:
+  - aws
+  - aws/session
+  - service/s3
+  - service/s3/s3manager
+  - service/s3/s3manager/s3manageriface
+- package: github.com/cactus/go-statsd-client
+  version: v3.1.0
+  subpackages:
+  - statsd
+- package: github.com/facebookgo/httpdown
+- package: github.com/julienschmidt/httprouter
+  version: v1.1
+- package: github.com/pkg/errors
+  version: v0.8.0
+- package: go.uber.org/zap
+  version: v1.0.0-rc.3
+- package: gopkg.in/alecthomas/kingpin.v2
+  version: v2.2.3
