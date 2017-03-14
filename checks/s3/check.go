@@ -109,8 +109,8 @@ func (c *check) checkCanDownload() error {
 		Key:    aws.String(c.key),
 	})
 	if err != nil {
-		if err := c.stats.SetInt(metricDownload, 0, 1.0); err != nil {
-			c.log.Error("cannot emit metric", zap.String("metric", metricDownload), zap.Error(err))
+		if serr := c.stats.SetInt(metricDownload, 0, 1.0); serr != nil {
+			c.log.Error("cannot emit metric", zap.String("metric", metricDownload), zap.Error(serr))
 		}
 		c.log.Error("download check failed", zap.Error(err))
 		return errors.Wrapf(err, "%s download check failed, bucket=%s, key=%s", c.name, c.bucket, c.key)
