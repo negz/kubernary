@@ -1,6 +1,56 @@
 # kubernary
 A canary app for Kubernetes (or anywhere really).
 
+## Usage
+Kubernary runs as a daemon. It runs all checks at a configurable interval.
+Checks generally emit logs and metrics at run time.
+
+```
+$ docker run negz/kubernary /kubernary/kubernary --help
+usage: kubernary [<flags>] <statsd>
+
+Checks whether your Kubernetes cluster works.
+
+Flags:
+      --help             Show context-sensitive help (also try --help-long and
+                         --help-man).
+      --no-stats         Don't send statsd stats.
+      --listen=":10002"  Address at which to expose HTTP health checks.
+  -d, --debug            Run with debug logging.
+      --close-after=1m   Wait this long at shutdown before closing HTTP
+                         connections.
+      --kill-after=2m    Wait this long at shutdown before exiting.
+
+Args:
+  <statsd>  Address to which to send statsd metrics.
+```
+
+Kubernary exposes the following HTTP endpoints:
+
+* `http://kubernary/quitquitquit` - Causes Kubernary to shutdown and exit
+   immediately.
+* `http://kubernary/health` - Runs all checks on-demand.
+
+The `/health` endpoint returns:
+
+* `200 OK` - If all checks pass.
+* `503 SERVICE UNAVAILABLE` - If one or more check fails.
+* `500 INTERNAL SERVER ERROR` - If an error unrelated to a check occurs.
+
+Along with the following JSON body:
+```
+{
+  "s3": {
+    "ok": true,
+    "error": ""
+  },
+  "failingcheck": {
+    "ok": false,
+    "error": "Kaboom!"
+  }
+}
+```
+
 ## Checks
 Currently the only check is Amazon S3. This check ensures a Kubernary can read a
 file from an S3 bucket, primarily as a way of validating that `kube2iam` is
