@@ -16,8 +16,11 @@ import (
 const (
 	metricDownload string = "download"
 
-	envBucket     string = "BUCKET"
-	envKey        string = "KEY"
+	cfgRegion string = "REGION"
+	cfgBucket string = "BUCKET"
+	cfgKey    string = "KEY"
+
+	defaultRegion string = "us-east-1"
 	defaultBucket string = "kubernary"
 	defaultKey    string = "check"
 )
@@ -31,8 +34,9 @@ type check struct {
 	key        string
 }
 
-func newDownloader() (s3manageriface.DownloaderAPI, error) {
-	s, err := session.NewSession(aws.NewConfig().WithRegion("us-east-1"))
+func newDownloader(region string) (s3manageriface.DownloaderAPI, error) {
+	// TODO(negz): Make region configurable.
+	s, err := session.NewSession(aws.NewConfig().WithRegion(region))
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create new AWS session")
 	}
@@ -65,15 +69,19 @@ func New(name string, s statsd.Statter, co ...Option) (kubernary.Checker, error)
 		return nil, errors.Wrap(err, "cannot create default logger")
 	}
 
-	cfg := map[string]string{envBucket: defaultBucket, envKey: defaultKey}
+	cfg := map[string]string{
+		cfgRegion: defaultRegion,
+		cfgBucket: defaultBucket,
+		cfgKey:    defaultKey,
+	}
 	cfg = kubernary.CheckConfigFromEnv(name, cfg)
 
 	c := &check{
 		name:   name,
 		stats:  s.NewSubStatter(name),
 		log:    l,
-		bucket: cfg[envBucket],
-		key:    cfg[envKey],
+		bucket: cfg[cfgBucket],
+		key:    cfg[cfgKey],
 	}
 
 	for _, o := range co {
@@ -86,7 +94,7 @@ func New(name string, s statsd.Statter, co ...Option) (kubernary.Checker, error)
 
 	if c.downloader == nil {
 		var err error
-		c.downloader, err = newDownloader()
+		c.downloader, err = newDownloader(cfg[cfgRegion])
 		if err != nil {
 			return nil, errors.Wrap(err, "cannot create S3 downloader")
 		}
