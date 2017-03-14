@@ -24,6 +24,7 @@ func setupS3Check(log *zap.Logger, s statsd.Statter) *kubernary.CheckConfig {
 	return &kubernary.CheckConfig{Checker: check, Interval: 3 * time.Second, Timeout: 2 * time.Second}
 }
 
+// TODO(negz): Find a better pattern for including and configuring checks.
 func setupChecks(log *zap.Logger, s statsd.Statter) []*kubernary.CheckConfig {
 	return []*kubernary.CheckConfig{setupS3Check(log, s)}
 }
