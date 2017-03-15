@@ -1,5 +1,10 @@
 # kubernary
-A canary app for Kubernetes (or anywhere really).
+Kubernary is a canary app for Kubernetes (or anywhere really).
+
+Kubernary runs arbitrary checks on a regular interval, or on demand.
+These checks can emulate the common work patterns of real services
+inside your cluster and emit metrics. This can give you an early
+warning when overall cluster functionality is degraded.
 
 ## Usage
 Kubernary runs as a daemon. It runs all checks at a configurable interval.
