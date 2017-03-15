@@ -81,6 +81,6 @@ it into a Docker image. You'll need to push it to ECR manually:
 ```
 VERSION=$(git rev-parse -short HEAD)
 
-docker push negz/goodneighbor:latest
-docker push negz/goodneighbor:${VERSION}
+docker push negz/kubernary:latest
+docker push negz/kubernary:${VERSION}
 ```
