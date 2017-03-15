@@ -21,7 +21,7 @@ const statsPrefix string = "kubernary"
 func setupS3Check(log *zap.Logger, s statsd.Statter) *kubernary.CheckConfig {
 	check, err := s3.New("s3", s, s3.Logger(log))
 	kingpin.FatalIfError(err, "cannot setup S3 check")
-	return &kubernary.CheckConfig{Checker: check, Interval: 3 * time.Second, Timeout: 2 * time.Second}
+	return &kubernary.CheckConfig{Checker: check, Interval: 30 * time.Second, Timeout: 2 * time.Second}
 }
 
 // TODO(negz): Find a better pattern for including and configuring checks.
